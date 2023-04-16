@@ -1,0 +1,24 @@
+# Dependencies
+/node_modules
+
+# Compiled output
+/dist
+
+# Environment variables
+.env
+
+# Logs
+logs
+
+# Editor and IDE files
+.vscode/
+.idea/
+
+# Temporary files
+*.log
+*.swp
+*.tmp
+
+# Other generated files
+coverage/
+yarn.lock
