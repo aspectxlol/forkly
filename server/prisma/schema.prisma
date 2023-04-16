@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(uuid())
+  username     String
+  name         String
+  email        String
+  avatarUrl    String
+  password     String?
+  phone        String?
+  address      String?
+  accessToken  String
+  refreshToken String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  PaymentCards PaymentCards[]
+  favourite    Favourite[]
+  Order        Order[]
+}
+
+model Restaurant {
+  id          String      @id @default(uuid())
+  name        String
+  description String
+  phone       String
+  address     String
+  logoUrl     String
+  coverUrl    String
+  taxAmount   String
+  favourite   Favourite[]
+  MenuItem    MenuItem[]
+  Order       Order[]
+}
+
+model PaymentCards {
+  id      String  @id @default(uuid())
+  owner   User    @relation(fields: [ownerId], references: [id])
+  ownerId String
+  brand   String
+  last4   String
+  Order   Order[]
+}
+
+model Favourite {
+  id           String     @id @default(uuid())
+  user         User       @relation(fields: [userId], references: [id])
+  userId       String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId String
+}
+
+model Category {
+  id       String     @id @default(uuid())
+  name     String
+  MenuItem MenuItem[]
+}
+
+model MenuItem {
+  id           String      @id @default(uuid())
+  name         String
+  description  String
+  price        Float
+  category     Category    @relation(fields: [categoryId], references: [id])
+  categoryId   String
+  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id])
+  restaurantId String
+  OrderItem    OrderItem[]
+}
+
+model Order {
+  id            String       @id @default(uuid())
+  status        String
+  total         Float
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  customer      User         @relation(fields: [customerId], references: [id])
+  customerId    String
+  restaurant    Restaurant   @relation(fields: [restaurantId], references: [id])
+  restaurantId  String
+  paymentCard   PaymentCards @relation(fields: [paymentCardId], references: [id])
+  paymentCardId String
+  OrderItem     OrderItem[]
+}
+
+model OrderItem {
+  id       String   @id @default(uuid())
+  quantity Int
+  price    Float
+  order    Order    @relation(fields: [orderId], references: [id])
+  orderId  String
+  item     MenuItem @relation(fields: [itemId], references: [id])
+  itemId   String
+}
