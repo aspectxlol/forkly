@@ -17,7 +17,15 @@ export class createUserDTO {
   @IsNotEmpty()
   @IsString()
   password: string;
+
+  @IsString()
+  phone: string;
+
+  @IsString()
+  address: string;
 }
+
+// class address
 
 export class createDiscordUserDTO {
   @IsNotEmpty()
