@@ -1,6 +1,7 @@
 import { useState } from "react";
 import AddressInputComponent from "./AddressInputComponent";
 import Pinpoint from "./svg/Pinpoint";
+import PhoneInput from "./PhoneInput";
 
 interface UserAccountSetupProps {
   onNext: () => void;
@@ -16,11 +17,12 @@ export default function UserAccountSetup(props: UserAccountSetupProps) {
         <input type="text" name="firstName" id="firstName" placeholder="First Name" className="w-1/2 mr-2 px-4 py-2 border-gray-400 rounded-lg focus:outline-none focus:border-blue-500" />
         <input type="text" name="lastName" id="lastName" placeholder="Last Name" className="w-1/2 ml-2 px-4 py-2 border-gray-400 rounded-lg focus:outline-none focus:border-blue-500" />
       </div>
-      <input type="text" name="phone" id="phone" placeholder="Phone" className="mb-4 px-4 py-2 border-gray-400 rounded-lg focus:outline-none focus:border-blue-500" />
+      {/* <input type="text" name="phone" id="phone" placeholder="Phone" className="mb-4 px-4 py-2 border-gray-400 rounded-lg focus:outline-none focus:border-blue-500" /> */}
+      <PhoneInput />
       <div className="w-full flex items-center">
         <input type="text" name="address" id="address" placeholder="Address" className="flex-grow mb-4 px-4 py-2 border-gray-400 rounded-lg focus:outline-none focus:border-blue-500" />
         <button onClick={() => setShowAddressInput(!showAddressInput)} className="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-          <Pinpoint />
+          pick
         </button>
       </div>
       {showAddressInput && <AddressInputComponent />}
