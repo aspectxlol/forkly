@@ -1,40 +1,67 @@
-import countries from '@forkly/assets/countries.json'
-import { Country } from '@forkly/assets/types'
-import parsePhoneNumberFromString, { CountryCode, format, getCountries, getCountryCallingCode, parse, parseIncompletePhoneNumber } from 'libphonenumber-js'
-import { useState } from 'react'
+import getCountriesData, { filterCountries, getCountry } from '@forkly/assets/countries';
+import { Country } from '@forkly/assets/types';
+import { CountryCode, ParsedNumber, format, getCountryCallingCode, parseNumber, parsePhoneNumberFromString } from 'libphonenumber-js';
+import { useState } from 'react';
 
 interface PhoneInputProps {
-  value: string
-  onChange: (value: string) => void
+  value: string;
+  onChange: (value: string) => void;
 }
 
 export default function PhoneInput() {
-  const [Phone, setPhone] = useState<string>('');
-  const [SelectedCountry, setSelectedCountry] = useState<Country | undefined>();
+  const [phone, setPhone] = useState<string>('');
+  const [selectedCountry, setSelectedCountry] = useState<Country | undefined>();
+  const data = getCountriesData();
 
   const handleCountrySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const countryCode = e.target.value as CountryCode;
-    setSelectedCountry(countries.countries.find((country) => country.countryCode === countryCode));
+    setSelectedCountry(data.find((country) => country.countryCode === countryCode));
     setPhone(`+${getCountryCallingCode(countryCode)} `);
   };
 
   const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const phoneNumber = parsePhoneNumberFromString(`${Phone}${e.target.value}`, SelectedCountry?.countryCode!);
-    setPhone(format(phoneNumber, 'INTERNATIONAL'));
+    setPhone(e.target.value);
+    console.log(e.target.value, phone)
+    const phoneNumber = parseNumber(`${phone}${e.target.value}`, selectedCountry?.countryCode! as CountryCode);
+    if (phoneNumber) {
+      console.log(e.target.value, phone, 'if1')
+
+      setSelectedCountry(getCountry((phoneNumber as ParsedNumber).country))
+          console.log(e.target.value, phone, 'if2')
+
+
+      setPhone(format(phoneNumber as ParsedNumber, 'INTERNATIONAL'));
+      console.log(e.target.value, phone, 'if3')
+
+
+    } else {
+      console.log(e.target.value, phone, 'else')
+      setPhone(e.target.value);
+    }
   };
 
   return (
     <div>
-      <select name="country" id="countrySelect" value={SelectedCountry?.countryCode} onChange={handleCountrySelect}>
+      <select
+        name="country"
+        id="countrySelect"
+        value={selectedCountry?.countryCode}
+        onChange={handleCountrySelect}>
         <option value="">Select a country</option>
-        {countries.countries.sort((a, b) => a.name.localeCompare(b.name)).map((country) => (
+        {data.sort((a, b) => a.name.localeCompare(b.name)).map((country) => (
           <option key={country.countryCode} value={country.countryCode}>
             {country.name} (+{getCountryCallingCode(country.countryCode as CountryCode)})
           </option>
         ))}
       </select>
-      <input type="text" placeholder="Phone" name="phone" value={Phone} onChange={handlePhoneInput} />
-      <div>Formatted Phone Number: {Phone}</div>
+      <input
+        type="text"
+        placeholder="Phone"
+        name="phone"
+        value={phone}
+        onChange={(e) => handlePhoneInput(e)} />
+      <div>Formatted Phone Number: {phone}</div>
+      <div>country: {selectedCountry?.name}</div>
     </div>
   );
 }

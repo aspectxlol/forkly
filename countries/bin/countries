@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+const yargs = require('yargs');
+const { } = require('../dist/types/');
+
+yargs
+  .command('generate', 'Generate countries data', {}, generateCountries)
+  .demandCommand(1, 'You need to specify a command')
+  .help()
+  .argv;
